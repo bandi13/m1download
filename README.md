@@ -5,3 +5,9 @@ USERNAME="<YourAccountUsername>"
 PASSWORD="<YourAccountPassword>"
 OTP_SECRET="<Your16CharOTPSecret>"
 ```
+
+Admittedly, this is an ugly script that invokes shell commands to consolidate the output. That being said, it is pretty portable, and more importantly, it does the job.
+
+If you found this useful, consider supporting future work like this:
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoff.ee/bandi13)
+
