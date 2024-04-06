@@ -81,6 +81,9 @@ if __name__ == "__main__":
 
     download_activity(True)
 
+    # List all the files by time | reverse the order | print all but the first row of each file | reverse the order
+    os.system("ls -1t Activity-* | tac | xargs -I{} sh -c 'tail -n +2 \"{}\"' | tac > ./M1Tx.csv")
+
     if not DEBUGGING:
         driver.quit()
 

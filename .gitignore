@@ -4,4 +4,4 @@ account
 __pycache__/
 
 *.swp
-Activity-*
+*.csv
