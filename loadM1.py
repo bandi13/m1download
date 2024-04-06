@@ -7,14 +7,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 def get_driver(headless):
+    options = webdriver.ChromeOptions()
+
+    # Put downloads in current directory
+    prefs = {
+        "download.default_directory": os.getcwd(),
+        "download.directory_upgrade": True,
+        "download.prompt_for_download": False,
+    }
+    options.add_experimental_option("prefs", prefs)
+
     if headless == True:
-        options = webdriver.ChromeOptions()
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
 
-        driver = webdriver.Chrome(service=Service("/usr/bin/chromedriver"), options=options)
-    else:
-        driver = webdriver.Chrome()
+    driver = webdriver.Chrome(service=Service("/usr/bin/chromedriver"), options=options)
 
     return driver
 
