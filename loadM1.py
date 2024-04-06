@@ -3,8 +3,13 @@ from account_info import account_info
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
+import os
+
+DEBUGGING=True
 
 def get_driver(headless):
     options = webdriver.ChromeOptions()
@@ -37,8 +42,33 @@ def do2FA(token):
     driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div/div/form/div/div/input").send_keys(token)
     driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div/div/form/button").click()
 
+def download_activity(dividends_only):
+    # Wait for "Invest" menu option to load
+    wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/nav/div[2]/div[2]")))
+    # Switch to "Activity" page
+    driver.get("https://dashboard.m1.com/d/invest/activity")
+    # Wait for "Download" button to load
+    wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[4]/a/span/div")))
+    download = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[4]/a/span/div")
+    next_button = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[1]/div/button[2]")
+
+    if dividends_only:
+        # Click on "Activity type"
+        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[1]").click()
+        # Hover over "Dividends"
+        hoverable = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[2]/div/div[3]")
+        ActionChains(driver).move_to_element(hoverable).perform()
+        # Click on "Only"
+        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[2]/div/div[3]/label/a/span").click()
+        time.sleep(0.1)
+
+    while next_button.is_enabled():
+        download.click()
+        next_button.click()
+        time.sleep(1)
+
 if __name__ == "__main__":
-    driver = get_driver(False)
+    driver = get_driver(not DEBUGGING)
 
     wait = WebDriverWait(driver, 5)
     driver.implicitly_wait(0.5)
@@ -49,6 +79,8 @@ if __name__ == "__main__":
 
     do2FA(account.get_otp())
 
-# Comment this out to leave the browser window open
-#   driver.quit()
+    download_activity(True)
+
+    if not DEBUGGING:
+        driver.quit()
 
