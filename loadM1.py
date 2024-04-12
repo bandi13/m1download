@@ -23,8 +23,8 @@ def get_driver(headless):
     options.add_experimental_option("prefs", prefs)
 
     if headless == True:
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
+        options.add_argument("--start-maximized");
+        options.add_argument('--headless=new')
 
     driver = webdriver.Chrome(service=Service("/usr/bin/chromedriver"), options=options)
 
