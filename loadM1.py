@@ -58,6 +58,7 @@ def download_activity(dividends_only):
         # Hover over "Dividends"
         hoverable = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[2]/div/div[3]")
         ActionChains(driver).move_to_element(hoverable).perform()
+        time.sleep(0.1)
         # Click on "Only"
         driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[2]/div/div[3]/label/a/span").click()
         time.sleep(0.1)
