@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
 
-DEBUGGING=True
+DEBUGGING=False
 
 def get_driver(headless):
     options = webdriver.ChromeOptions()
@@ -63,7 +63,10 @@ def download_activity(dividends_only):
         driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[2]/div/div[3]/label/a/span").click()
         time.sleep(0.1)
 
+    page = 1
     while next_button.is_enabled():
+        print("Downloading page {}".format(page))
+        page = page + 1
         download.click()
         next_button.click()
         time.sleep(1)
