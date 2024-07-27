@@ -42,29 +42,30 @@ def do2FA(token):
     driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div/div/form/div/div/input").send_keys(token)
     driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div/div/form/button").click()
 
-def download_activity(dividends_only):
+def download_activity(dividends_only, num_pages):
     # Wait for "Invest" menu option to load
     wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/nav/div[2]/div[2]")))
     # Switch to "Activity" page
     driver.get("https://dashboard.m1.com/d/invest/activity")
     # Wait for "Download" button to load
-    wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[4]/a/span/div")))
-    download = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[4]/a/span/div")
-    next_button = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[1]/div/button[2]")
+    download_xpath = "/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div[4]/a/span/div/div"
+    wait.until(EC.visibility_of_element_located((By.XPATH, download_xpath)))
+    download = driver.find_element(By.XPATH, download_xpath)
+    next_button = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div/button[2]")
 
     if dividends_only:
         # Click on "Activity type"
-        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[1]").click()
+        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div[3]/div[1]").click()
         # Hover over "Dividends"
-        hoverable = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[2]/div/div[3]")
+        hoverable = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div[3]/div[2]/div/div[3]/div")
         ActionChains(driver).move_to_element(hoverable).perform()
         time.sleep(0.1)
         # Click on "Only"
-        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[3]/div[2]/div/div[3]/label/a/span").click()
-        time.sleep(0.1)
+        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div[3]/div[2]/div/div[3]/label").click()
+        time.sleep(0.5)
 
     page = 1
-    while next_button.is_enabled():
+    while ((num_pages >= page) and next_button.is_enabled()):
         print("Downloading page {}".format(page))
         page = page + 1
         download.click()
@@ -83,7 +84,7 @@ if __name__ == "__main__":
 
     do2FA(account.get_otp())
 
-    download_activity(True)
+    download_activity(True, 5)
 
     # List all the files by time | reverse the order | print all but the first row of each file | reverse the order
     os.system("ls -1t Activity-* | tac | xargs -I{} sh -c 'tail -n +2 \"{}\"' | tac > ./M1Tx.csv")
