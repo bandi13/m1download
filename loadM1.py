@@ -44,25 +44,25 @@ def do2FA(token):
 
 def download_activity(dividends_only, num_pages):
     # Wait for "Invest" menu option to load
-    wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/nav/div[2]/div[2]")))
+    wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div/div[2]/nav/div[2]/div[3]")))
     # Switch to "Activity" page
     driver.get("https://dashboard.m1.com/d/invest/activity")
     # Wait for "Download" button to load
-    download_xpath = "/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div[4]/a/span/div/div"
+    download_xpath = "/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[4]/button"
     wait.until(EC.visibility_of_element_located((By.XPATH, download_xpath)))
     download = driver.find_element(By.XPATH, download_xpath)
-    next_button = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div/button[2]")
+    next_button = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[1]/div/button[2]")
 
     if dividends_only:
         # Click on "Activity type"
-        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div[3]/div[1]").click()
+        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[3]/div/div").click()
         # Hover over "Dividends"
-        hoverable = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div[3]/div[2]/div/div[3]/div")
+        hoverable = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[5]/div/div[1]/div/div/div/div/div[3]")
         ActionChains(driver).move_to_element(hoverable).perform()
         time.sleep(0.1)
         # Click on "Only"
-        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div[3]/div[2]/div/div[3]/label").click()
-        time.sleep(0.5)
+        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[5]/div/div[1]/div/div/div/div/div[3]/label/button").click()
+        time.sleep(1)
 
     page = 1
     while ((num_pages >= page) and next_button.is_enabled()):
