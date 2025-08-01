@@ -55,11 +55,16 @@ def download_activity(dividends_only, num_pages):
         # Click on "Activity type"
         driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[3]/div/div").click()
         # Hover over "Dividends"
-        hoverable = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[5]/div/div[1]/div/div/div/div/div[3]")
+        dividends_xpath = "/html/body/div[5]/div/div[1]/div/div/div/div/div[3]"
+        wait.until(EC.visibility_of_element_located((By.XPATH, dividends_xpath)))
+        hoverable = driver.find_element(By.XPATH,dividends_xpath)
         ActionChains(driver).move_to_element(hoverable).perform()
-        time.sleep(0.1)
         # Click on "Only"
-        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[5]/div/div[1]/div/div/div/div/div[3]/label/button").click()
+        dividendonly_xpath = "/html/body/div[5]/div/div[1]/div/div/div/div/div[3]/label/button"
+        wait.until(EC.visibility_of_element_located((By.XPATH, dividendonly_xpath)))
+        driver.find_element(By.XPATH,dividendonly_xpath).click()
+        # Click on "Activity type"
+        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[3]/div/div").click()
         time.sleep(1)
 
     page = 1
