@@ -50,8 +50,6 @@ def download_activity(dividends_only, num_pages):
     # Wait for "Download" button to load
     download_xpath = "/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[4]/button"
     wait.until(EC.visibility_of_element_located((By.XPATH, download_xpath)))
-    download = driver.find_element(By.XPATH, download_xpath)
-    next_button = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[1]/div/button[2]")
 
     if dividends_only:
         # Click on "Activity type"
@@ -65,6 +63,8 @@ def download_activity(dividends_only, num_pages):
         time.sleep(1)
 
     page = 1
+    download = driver.find_element(By.XPATH, download_xpath)
+    next_button = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[1]/div/button[2]")
     while ((num_pages >= page) and next_button.is_enabled()):
         print("Downloading page {}".format(page))
         page = page + 1
