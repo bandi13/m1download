@@ -75,7 +75,10 @@ def download_activity(dividends_only, num_pages):
 if __name__ == "__main__":
     driver = get_driver(not DEBUGGING)
 
-    wait = WebDriverWait(driver, 5)
+    if DEBUGGING:
+        wait = WebDriverWait(driver, 30)
+    else:
+        wait = WebDriverWait(driver, 5)
     driver.implicitly_wait(0.5)
 
     account = account_info("account")
