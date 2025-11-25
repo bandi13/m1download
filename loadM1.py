@@ -32,17 +32,22 @@ def get_driver(headless):
 
 def login(username, password):
     driver.get("https://dashboard.m1.com/login")
-    wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div[2]/div[2]/div[1]/div/form/div[2]/div/div[1]/div/input")))
-    driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div[1]/div/form/div[2]/div/div[1]/div/input").send_keys(username)
-    driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div[1]/div/form/div[2]/div/div[2]/div/input").send_keys(password)
-    driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div[1]/div/form/div[4]/div/button").click()
+    username_field = "/html/body/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/form/div[2]/div/div[1]/div/input"
+    password_field = "/html/body/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/form/div[2]/div/div[2]/div/input"
+    submit_button = "/html/body/div[2]/div/div[2]/div[2]/div[2]/div/div[1]/div/form/div[4]/div/button"
+    wait.until(EC.visibility_of_element_located((By.XPATH, username_field)))
+    driver.find_element(By.XPATH, username_field).send_keys(username)
+    driver.find_element(By.XPATH, password_field).send_keys(password)
+    driver.find_element(By.XPATH, submit_button).click()
 
 def do2FA(token):
-    wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div[2]/div[2]/div/div/form/div/div/input")))
-    driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div/div/form/div/div/input").send_keys(token)
-    driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div[2]/div[2]/div/div/form/button").click()
+    authcode_field = "/html/body/div[2]/div/div[2]/div[2]/div[2]/div/div/div/form/div/div/input[1]"
+    submit_button = "/html/body/div[2]/div/div[2]/div[2]/div[2]/div/div/div/form/button"
+    wait.until(EC.visibility_of_element_located((By.XPATH, authcode_field)))
+    driver.find_element(By.XPATH, authcode_field).send_keys(token)
+    driver.find_element(By.XPATH, submit_button).click()
 
-def download_activity(dividends_only, num_pages):
+def download_activity():
     # Wait for "Invest" menu option to load
     wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/div[2]/div/div/div/div[2]/nav/div[2]/div[3]")))
     # Switch to "Activity" page
@@ -51,31 +56,10 @@ def download_activity(dividends_only, num_pages):
     download_xpath = "/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[4]/button"
     wait.until(EC.visibility_of_element_located((By.XPATH, download_xpath)))
 
-    if dividends_only:
-        # Click on "Activity type"
-        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[3]/div/div").click()
-        # Hover over "Dividends"
-        dividends_xpath = "/html/body/div[5]/div/div[1]/div/div/div/div/div[3]"
-        wait.until(EC.visibility_of_element_located((By.XPATH, dividends_xpath)))
-        hoverable = driver.find_element(By.XPATH,dividends_xpath)
-        ActionChains(driver).move_to_element(hoverable).perform()
-        # Click on "Only"
-        dividendonly_xpath = "/html/body/div[5]/div/div[1]/div/div/div/div/div[3]/label/button"
-        wait.until(EC.visibility_of_element_located((By.XPATH, dividendonly_xpath)))
-        driver.find_element(By.XPATH,dividendonly_xpath).click()
-        # Click on "Activity type"
-        driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[3]/div/div").click()
-        time.sleep(1)
-
-    page = 1
     download = driver.find_element(By.XPATH, download_xpath)
-    next_button = driver.find_element(By.XPATH,"/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div[1]/div[1]/div/button[2]")
-    while ((num_pages >= page) and next_button.is_enabled()):
-        print("Downloading page {}".format(page))
-        page = page + 1
-        download.click()
-        next_button.click()
-        time.sleep(1)
+    download.click()
+
+    time.sleep(5)
 
 if __name__ == "__main__":
     driver = get_driver(not DEBUGGING)
@@ -92,10 +76,10 @@ if __name__ == "__main__":
 
     do2FA(account.get_otp())
 
-    download_activity(True, 5)
+    download_activity()
 
     # List all the files by time | reverse the order | print all but the first row of each file | reverse the order
-    os.system("ls -1t Activity-* | tac | xargs -I{} sh -c 'tail -n +2 \"{}\"' | tac > ./M1Tx.csv")
+    os.system("filter.sh Activity-* > ./M1Tx.csv")
 
     if not DEBUGGING:
         driver.quit()
